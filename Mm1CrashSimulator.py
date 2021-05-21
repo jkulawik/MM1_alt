@@ -2,6 +2,7 @@ from functions import exp
 import random
 from models import Event, Packet, CrashOn
 from functions import write_output_to_file
+from functions import draw_plot
 
 def start_crash_simulation():
     real_list = []
@@ -13,10 +14,10 @@ def start_crash_simulation():
     confidence = []
 
     for l in lambdas:
-        real_list= []
-        theo_list= []
+        real_list = []
+        theo_list = []
         print("L NOW: " + str(l))
-        for c in range(0, 10):
+        for c in range(0, 4):
             print("C NOW: " + str(c))
             a, b = mm1_with_crash(c, l, 1000000)
             real_list.append(a)
@@ -33,6 +34,7 @@ def start_crash_simulation():
     print(theo_list)
     test = sum(real_list)
     print(test/len(real_list))
+    draw_plot(lambdas, practical, theoretical, theoretical, 4)
 
 
 def mm1_with_crash(seed, lambda_in, max_packets):
