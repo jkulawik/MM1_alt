@@ -4,7 +4,7 @@ from models import Event, Packet,CrashOn
 import matplotlib.pyplot as plt
 
 
-random.seed(3)
+random.seed(22)
 # sredni czas obslugi pakietu przez serwer
 time_of_service = 0.125
 # sredni odstep pomiedzy pakietami 0.5 - 4

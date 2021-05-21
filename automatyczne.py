@@ -9,9 +9,9 @@ for l in lambdas:
     real_list= []
     theo_list= []
     print("L NOW: " + str(l))
-    for c in range(0,10):
+    for c in range(0,20):
         print("C NOW: " + str(c))
-        a, b = mm1_with_crash(c, l, 100000)
+        a, b = mm1_with_crash(c, l, 1000000)
         real_list.append(a)
         theo_list.append(b)
         #print(real_list)
