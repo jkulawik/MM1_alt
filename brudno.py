@@ -8,7 +8,7 @@ random.seed(2)
 # sredni czas obslugi pakietu przez serwer
 time_of_service = 0.125
 # sredni odstep pomiedzy pakietami 0.5 - 4
-LAMBDA = 0.5
+LAMBDA = 2
 average_time_between_packets = 1 / LAMBDA
 # czy serwer jest zajety
 is_server_busy = True
@@ -49,7 +49,8 @@ event_list.append(Event(time=exp(c_on), obj=crash, type='crash_on'))
 event_list.sort(key=lambda Event: Event.time)
 crash_list = []
 packet_delay_list = []
-
+time_of_service_list = []
+buffer_size_list = []
 
 packetsCounter += 1
 
@@ -66,7 +67,7 @@ while number_of_serviced_packets < number_of_packets_for_simulation:
         curr_p = event.obj
         curr_p.finish_of_service = clock
         #print(f'PROCESSED ARRIVE: {curr_p.time_of_arrival} AT: {curr_p.finish_of_service}')
-        print('END PACKET')
+        print(f'END PACKET {curr_p.time_of_arrival}')
         if len(packets_buffor) == 0:
             is_server_busy = False
         elif not is_server_dead:
@@ -77,10 +78,13 @@ while number_of_serviced_packets < number_of_packets_for_simulation:
         #print('NEW PACKET')
         #obecny pakiet trafia na bufor
         packets_buffor.append(event.obj)
+        buffer_size_list.append(len(packets_buffor))
         #nastepny pakiet
         t_delay = exp(average_time_between_packets)
         packet_delay_list.append(t_delay)
-        next_p = Packet(time_of_arrival=clock+t_delay, time_of_service=exp(time_of_service))
+        tof_temp = exp(time_of_service)
+        time_of_service_list.append(tof_temp)
+        next_p = Packet(time_of_arrival=clock+t_delay, time_of_service=tof_temp)
         event_list.append(Event(time=next_p.time_of_arrival, obj=next_p, type='new_packet'))
         packets.append(next_p)
         #jesli wszystko ok to przetwarzamy najstarszy pakiet
@@ -113,13 +117,17 @@ for p in packets:
         delays_list.append((p.finish_of_service - p.time_of_arrival))
         sum_processed += 1
         #print(f'{p.finish_of_service} {p.time_of_arrival}')
-plt.plot(delays_list, 'r+', markersize=2)
+plt.plot(delays_list, 'ro', markersize=2)
 plt.show()
 plt.plot(crash_list, 'bo', markersize=2)
 plt.show()
-plt.plot(packet_delay_list, 'go', markersize=2)
+plt.plot(buffer_size_list, 'go', markersize=2)
 plt.show()
+
 print('AVG packet delay: {}'.format(sum(packet_delay_list)/len(packet_delay_list)))
+
+print('AVG packet time of serv: {}'.format(sum(time_of_service_list)/len(time_of_service_list)))
+
 average = sum_time/sum_processed
 print('PRACTICAL DELAY: {}'.format(average))
 propability_off = c_off / (c_off + c_on)
