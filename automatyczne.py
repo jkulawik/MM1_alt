@@ -1,9 +1,13 @@
 from main import mm1_with_crash
-
+import matplotlib.pylab as plt
+import numpy as np
 
 real_list = []
 theo_list = []
-lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+#lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+lambdas = np.arange(0.5, 4, 0.1)
+real_mean_list = []
+theo_end_list = []
 
 for l in lambdas:
     real_list= []
@@ -25,10 +29,14 @@ for l in lambdas:
         test = sum(real_list)
         f.write(' \n MEAN : \n')
         f.write(str(test / len(real_list)))
+        real_mean_list.append(test/len(real_list))
+        theo_end_list.append(theo_list[0])
 
 
+plt.plot(lambdas, real_mean_list, label='practical')
+plt.plot(lambdas, theo_end_list, label='teoretical')
+plt.xlabel("Lambda 0.5 - 4 [1/s]")
+plt.ylabel("Sredni czas oczekowania E[T]")
+plt.legend()
+plt.show()
 
-print(real_list)
-print(theo_list)
-test = sum(real_list)
-print(test/len(real_list))
