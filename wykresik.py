@@ -1,0 +1,13 @@
+import matplotlib.pyplot as plt
+
+
+lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+mean_real = [20.461816890431002, 22.30956830170803, 25.098407035233116, 29.720108186021093, 36.114733956552755, 49.76164121540712, 73.62860219272292, 250.28311125017308]
+theoretical = [18.766961651917402, 21.639455782312922, 25.550200803212853, 31.18627450980392, 40.0125786163522, 55.80701754385965, 92.20289855072464, 265.0833333333333]
+
+plt.plot(lambdas, mean_real, label='practical')
+plt.plot(lambdas, theoretical, label='teoretical')
+plt.xlabel("Lambda 0.5 - 6.0 [1/s]")
+plt.ylabel("Sredni czas oczekowania E[T]")
+plt.legend()
+plt.show()
