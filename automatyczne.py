@@ -11,7 +11,7 @@ for l in lambdas:
     print("L NOW: " + str(l))
     for c in range(0,10):
         print("C NOW: " + str(c))
-        a, b = mm1_with_crash(c, l, 50000)
+        a, b = mm1_with_crash(c, l, 100000)
         real_list.append(a)
         theo_list.append(b)
         #print(real_list)

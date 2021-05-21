@@ -4,11 +4,11 @@ from models import Event, Packet,CrashOn
 import matplotlib.pyplot as plt
 
 
-random.seed(2)
+random.seed(3)
 # sredni czas obslugi pakietu przez serwer
 time_of_service = 0.125
 # sredni odstep pomiedzy pakietami 0.5 - 4
-LAMBDA = 2
+LAMBDA =
 average_time_between_packets = 1 / LAMBDA
 # czy serwer jest zajety
 is_server_busy = True
@@ -28,7 +28,7 @@ packets_buffor = []
 # liczba obsluzonych pakietow
 number_of_serviced_packets = 0
 # liczba pakietow ktora chcemy przesymulowac
-number_of_packets_for_simulation = 10000
+number_of_packets_for_simulation = 1000000
 
 first_packet = Packet(time_of_service=exp(time_of_service), time_of_arrival=exp(average_time_between_packets))
 packets.append(first_packet)
