@@ -110,6 +110,7 @@ def mm1_with_crash(seed, lambda_in, max_packets):
     sum_time = 0
     sum_processed = 0
     delays_list = []
+    packets_less = packets[round(len(packets)*0.1):]
     for p in packets:
         if p.finish_of_service != 0:
             sum_time += (p.finish_of_service - p.time_of_arrival)
