@@ -29,7 +29,7 @@ def start_crash_simulation():
         write_output_to_file(real_list=real_list, theo_list=theo_list, l=l, avg_practical_delay=avg_practical_delay)
         theoretical.append(theo_list[0])
         practical.append(test / len(real_list))
-
+    #com
     print(real_list)
     print(theo_list)
     test = sum(real_list)
