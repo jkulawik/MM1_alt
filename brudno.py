@@ -8,7 +8,7 @@ random.seed(3)
 # sredni czas obslugi pakietu przez serwer
 time_of_service = 0.125
 # sredni odstep pomiedzy pakietami 0.5 - 4
-LAMBDA =
+LAMBDA = 3
 average_time_between_packets = 1 / LAMBDA
 # czy serwer jest zajety
 is_server_busy = True
