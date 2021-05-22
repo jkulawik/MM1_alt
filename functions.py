@@ -32,7 +32,7 @@ def draw_plot(x, practical, teoretical, confidence_avg, confidence_min, confiden
 
 
 def write_output_to_file(real_list, theo_list, l, avg_practical_delay):
-    with open('output.txt', 'a+') as f:
+    with open('mm1crash_output.txt.txt', 'a+') as f:
         f.write(' \n \n \n LAMBDA {}'.format(l))
         f.write('\n REAL: \n')
         f.write(str(real_list))
