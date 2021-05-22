@@ -12,7 +12,7 @@ def start_crash_simulation(packets_num, replicates, confidence_range):
     real_list = []
     theo_list = []
     #lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
-    lambdas = np.arange(0.5, 4, 0.1)
+    lambdas = np.arange(0.5, 4.1, 0.1)
     #lambdas = [1, 2, 3, 4]
     theoretical = []
     practical = []
