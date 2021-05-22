@@ -4,7 +4,7 @@ from models import PacketMM1
 from models import PacketEvent
 import numpy
 from models import Time
-import scipy.stats as st
+from functions import calculate_confidence
 import TypeOfEvent
 from functions import exp
 from functions import draw_plot
@@ -22,7 +22,7 @@ def plan_event_come_next_packet(clock, number_of_packet, time_of_next_packet):
     return PacketEvent(TypeOfEvent.TypeOfEvent.COME_OF_PACKET, number_of_packet, clock + time_of_next_packet)
 
 
-def start_mm1_simulation(LAMBDA,seed):
+def start_mm1_simulation(LAMBDA, seed, packets_num, confidence_range):
     random.seed(seed)
     print("*************************")
     print("MM1 SIMULATION STARTED!!!")
@@ -47,7 +47,7 @@ def start_mm1_simulation(LAMBDA,seed):
     # liczba obsluzonych pakietow2
     number_of_serviced_packets = 0
     # liczba pakietow ktora chcemy przesymulowac
-    number_of_packets_for_simulation = 1000000
+    number_of_packets_for_simulation = packets_num
 
     # wygenerowanie pierwszego pakietu w symulacji
     first_packet = PacketMM1(
@@ -125,13 +125,13 @@ def start_mm1_simulation(LAMBDA,seed):
         # sortowanie listy zdarzen po czasie
         list_of_events.sort(key=lambda Event: Event.time_of_event)
 
-    return calculate_statistics(number_of_packets_for_simulation, packets, time_of_service, average_time_between_packets
-                                )
+    return calculate_statistics(number_of_packets_for_simulation, packets, time_of_service, average_time_between_packets,
+                                confidence_range)
 
 
 # funkcja odpowiedzialna za obliczenie wymaganych statystyk
 def calculate_statistics(number_of_packets_for_simulation, packets, time_of_service,
-                         average_time_between_packets):
+                         average_time_between_packets, confidence_range):
     print("**********************")
     print("CALCULATING STATISTICS")
     print("**********************")
@@ -155,33 +155,26 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
         practical_average_time_of_delay += (packets[i].time_finish_of_service -
                                   packets[i].time_of_arrive) / (number_of_packets_for_simulation - 1)
     print("AVERAGE PRACTICAL TIME OF WAITING IN SYSTEM ", practical_average_time_of_delay)
-    confidance_delay = calculate_delays(packets)
-
-    return Time(practical_average_time_of_delay, teoretical_average_delay, confidance_delay)
-
-
-def calculate_delays(packets):
-    opoznienia = []
+    delays = []
     for i in packets:
-        opoznienia.append(i.time_finish_of_service - i.time_of_arrive)
-    confidence = st.norm.interval(alpha=0.95, loc=numpy.mean(opoznienia), scale=st.sem(opoznienia))
-    confidence_delays = []
-    for i in opoznienia:
-        if confidence[0] <= i <=confidence[1]:
-            confidence_delays.append(i)
-    average_confidance_delay = 0
-    for i in confidence_delays:
-        average_confidance_delay += i
-    average_confidance_delay /= len(confidence_delays)
-    print("AVERAGE CONFIDENCE DELAY: " + str(average_confidance_delay))
-    return average_confidance_delay
+        delays.append(i.time_finish_of_service-i.time_of_arrive)
+    for i in delays:
+        if i <0:
+            print("ERR")
+    confidence_delay = calculate_confidence(delays, confidence_range)
 
-def start_mm1():
+    return Time(practical_average_time_of_delay, teoretical_average_delay, confidence_delay)
+
+
+
+
+def start_mm1(packets_num, replicates, confidence_range):
     #lista elementow od 0.5 do 6.0 z krokiem 0.1
     test_mm1 = numpy.arange(0.5, 6.1, 0.5)
     results1 = []
     for i in test_mm1:
-        results1.append(start_mm1_simulation(i, 5))
+        results1.append(start_mm1_simulation(LAMBDA=i, seed=5, packets_num=packets_num,
+                                             confidence_range=confidence_range))
     practical = []
     teoretical = []
     confidence = []

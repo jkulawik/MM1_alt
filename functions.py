@@ -1,6 +1,8 @@
 import random
 import math
 import matplotlib.pyplot as plt
+import scipy.stats as st
+import numpy
 
 
 # ponizsza funkcja generuje liczbe rozkladu wykladniczego na podstawie zadanej sredniej
@@ -36,3 +38,23 @@ def write_output_to_file(real_list, theo_list, l, avg_practical_delay):
 
         f.write(' \n MEAN : \n')
         f.write(avg_practical_delay)
+
+
+def calculate_confidence(opoznienia, range):
+    #opoznienia = []
+    #for i in packets:
+     #   if type == 0:
+      #      opoznienia.append(i.time_finish_of_service - i.time_of_arrive)
+       # elif type == 1:
+        #    opoznienia.append(i.finish_of_service - i.time_of_arrival)
+    confidence = st.norm.interval(alpha=range, loc=numpy.mean(opoznienia), scale=st.sem(opoznienia))
+    confidence_delays = []
+    for i in opoznienia:
+        if confidence[0] <= i <= confidence[1]:
+            confidence_delays.append(i)
+    average_confidance_delay = 0
+    for i in confidence_delays:
+        average_confidance_delay += i
+    average_confidance_delay /= len(confidence_delays)
+    print("AVERAGE CONFIDENCE DELAY: " + str(average_confidance_delay))
+    return average_confidance_delay

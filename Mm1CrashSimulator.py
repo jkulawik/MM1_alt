@@ -3,12 +3,14 @@ import random
 from models import Event, Packet, CrashOn
 from functions import write_output_to_file
 from functions import draw_plot
+from functions import calculate_confidence
 
-def start_crash_simulation():
+
+def start_crash_simulation(packets_num, replicates, confidence_range):
     real_list = []
     theo_list = []
-    lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
-
+    #lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+    lambdas = [1, 2, 3, 4]
     theoretical = []
     practical = []
     confidence = []
@@ -16,24 +18,26 @@ def start_crash_simulation():
     for l in lambdas:
         real_list = []
         theo_list = []
+        conf_list = []
         print("L NOW: " + str(l))
-        for c in range(0, 4):
+        for c in range(0, replicates):
             print("C NOW: " + str(c))
-            a, b = mm1_with_crash(c, l, 1000000)
+            a, b, delay = mm1_with_crash(c, l, packets_num)
             real_list.append(a)
             theo_list.append(b)
-            #print(real_list)
-            #print(theo_list)
+            conf_list.append(calculate_confidence(delay, confidence_range))
         test = sum(real_list)
         avg_practical_delay = str(test / len(real_list))
         write_output_to_file(real_list=real_list, theo_list=theo_list, l=l, avg_practical_delay=avg_practical_delay)
         theoretical.append(theo_list[0])
         practical.append(test / len(real_list))
+        confidence.append(sum(conf_list)/len(conf_list))
     print(real_list)
     print(theo_list)
     test = sum(real_list)
     print(test/len(real_list))
-    draw_plot(lambdas, practical, theoretical, theoretical, 4)
+
+    draw_plot(x=lambdas, practical=practical, teoretical=theoretical, confidence=confidence, LAMBDA=4)
 
 
 def mm1_with_crash(seed, lambda_in, max_packets):
@@ -84,7 +88,6 @@ def mm1_with_crash(seed, lambda_in, max_packets):
     packet_delay_list = []
     time_of_service_list = []
     buffer_size_list = []
-
 
     packetsCounter += 1
 
@@ -164,9 +167,9 @@ def mm1_with_crash(seed, lambda_in, max_packets):
     if p != 1:
         # Sredni czas oczekiwania w systemie - kalkulacje teoretyczne
         teoretical_average_delay = (p + LAMBDA*c_off*propability_off) / (LAMBDA * (1 - p))
-        return average, teoretical_average_delay
+        return average, teoretical_average_delay, delays_list
     else:
-        return average, None
+        return average, None, None
 
 
 
