@@ -141,6 +141,7 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
     u = 1 / time_of_service
     # p - srednie obciazenie systemu = LAMBDA/U
     p = LAMBDA / u
+    teoretical_average_delay = 0
     if p != 1:
         # Sredni czas oczekiwania w systemie - kalkulacje teoretyczne
         teoretical_average_delay = p/(LAMBDA * (1 - p))
@@ -157,7 +158,7 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
     print("AVERAGE PRACTICAL TIME OF WAITING IN SYSTEM ", practical_average_time_of_delay)
     delays = []
     for i in packets:
-        if p.finish_of_service != 0:
+        if i.time_finish_of_service != 0:
             delays.append(i.time_finish_of_service-i.time_of_arrive)
     confidence_delay = calculate_confidence(delays, confidence_range)
 
@@ -169,20 +170,37 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
 def start_mm1(packets_num, replicates, confidence_range):
     #lista elementow od 0.5 do 6.0 z krokiem 0.1
     test_mm1 = numpy.arange(0.5, 6.1, 0.5)
-    results1 = []
-    for i in test_mm1:
-        results1.append(start_mm1_simulation(LAMBDA=i, seed=5, packets_num=packets_num,
-                                             confidence_range=confidence_range))
+    theoretical = []
     practical = []
-    teoretical = []
     confidence = []
-    for i in results1:
-        practical.append(i.practical)
-    for i in results1:
-        teoretical.append(i.teoretical)
-    for i in results1:
-        confidence.append(i.confidence_interval)
-    draw_plot(test_mm1, practical, teoretical, confidence, 6)
+    for i in test_mm1:
+        real_list = []
+        theo_list = []
+        conf_list = []
+        print("L NOW: " + str(i))
+        for j in (0, replicates):
+            print("C NOW: " + str(j))
+            temp = (start_mm1_simulation(LAMBDA=i, seed=j, packets_num=packets_num, confidence_range=confidence_range))
+            real_list.append(temp.practical)
+            theo_list.append(temp.teoretical)
+            conf_list.append(temp.confidence_interval)
+        test = sum(real_list)
+        avg_practical_delay = str(test / len(real_list))
+        theoretical.append(theo_list[0])
+        practical.append(test / len(real_list))
+        confidence.append(sum(conf_list) / len(conf_list))
+    test = sum(real_list)
+    print(test / len(real_list))
+    #practical = []
+    #teoretical = []
+   # confidence = []
+    #for i in results1:
+     #   practical.append(i.practical)
+    #for i in results1:
+     #   teoretical.append(i.teoretical)
+    #for i in results1:
+      #  confidence.append(i.confidence_interval)
+    draw_plot(test_mm1, practical, theoretical, confidence, 6)
 
 
 
