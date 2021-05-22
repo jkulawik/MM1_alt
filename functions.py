@@ -18,10 +18,12 @@ def exp(mean):
     return float(-1.0) * float(mean) * math.log(losowa)
 
 
-def draw_plot(x, practical, teoretical, confidence, LAMBDA):
+def draw_plot(x, practical, teoretical, confidence_avg, confidence_min, confidence_max, LAMBDA):
     plt.plot(x, practical, label='practical')
     plt.plot(x, teoretical, label='teoretical')
-    plt.plot(x, confidence, label='srednia przedzialu ufnosci')
+    plt.plot(x, confidence_avg, label='srednia przedzialu ufnosci')
+    plt.plot(x, confidence_min, label='minimum przedzialu ufnosci')
+    plt.plot(x, confidence_max, label='maksimum przedzialu ufnosci')
     plt.xlabel("Lambda 0.5 - "+str(LAMBDA)+".0 [1/s]")
     plt.ylabel("Sredni czas oczekowania E[T]")
     plt.legend()
@@ -41,12 +43,6 @@ def write_output_to_file(real_list, theo_list, l, avg_practical_delay):
 
 
 def calculate_confidence(opoznienia, range):
-    #opoznienia = []
-    #for i in packets:
-     #   if type == 0:
-      #      opoznienia.append(i.time_finish_of_service - i.time_of_arrive)
-       # elif type == 1:
-        #    opoznienia.append(i.finish_of_service - i.time_of_arrival)
     confidence = st.norm.interval(alpha=range, loc=numpy.mean(opoznienia), scale=st.sem(opoznienia))
     confidence_delays = []
     for i in opoznienia:
@@ -57,4 +53,4 @@ def calculate_confidence(opoznienia, range):
         average_confidance_delay += i
     average_confidance_delay /= len(confidence_delays)
     print("AVERAGE CONFIDENCE DELAY: " + str(average_confidance_delay))
-    return average_confidance_delay
+    return average_confidance_delay, confidence[0], confidence[1]

@@ -21,10 +21,12 @@ class CrashOn:
 
 
 class Time:
-    def __init__(self, practical, teoretical, confidence_interval):
+    def __init__(self, practical, teoretical, confidence_interval, confidence_min, confidence_max):
         self.practical = practical
         self.teoretical = teoretical
         self.confidence_interval = confidence_interval
+        self.confidence_min = confidence_min
+        self.confidence_max = confidence_max
 
     def __str__(self): return f'teoretical: {self.teoretical} practical {self.practical} confidence {self.confidence_interval}'
 

@@ -13,31 +13,41 @@ def start_crash_simulation(packets_num, replicates, confidence_range):
     #lambdas = [1, 2, 3, 4]
     theoretical = []
     practical = []
-    confidence = []
+    confidence_average = []
+    confidence_minimal = []
+    confidence_maksimal = []
 
     for l in lambdas:
         real_list = []
         theo_list = []
-        conf_list = []
+        conf_list_avg = []
+        conf_list_min = []
+        conf_list_max = []
         print("L NOW: " + str(l))
         for c in range(0, replicates):
             print("C NOW: " + str(c))
             a, b, delay = mm1_with_crash(c, l, packets_num)
             real_list.append(a)
             theo_list.append(b)
-            conf_list.append(calculate_confidence(delay, confidence_range))
+            temp_avg, temp_min, temp_max = calculate_confidence(delay, confidence_range)
+            conf_list_avg.append(temp_avg)
+            conf_list_min.append(temp_min)
+            conf_list_max.append(temp_max)
         test = sum(real_list)
         avg_practical_delay = str(test / len(real_list))
         write_output_to_file(real_list=real_list, theo_list=theo_list, l=l, avg_practical_delay=avg_practical_delay)
         theoretical.append(theo_list[0])
         practical.append(test / len(real_list))
-        confidence.append(sum(conf_list)/len(conf_list))
+        confidence_average.append(sum(conf_list_avg)/len(conf_list_avg))
+        confidence_minimal.append(sum(conf_list_min) / len(conf_list_min))
+        confidence_maksimal.append(sum(conf_list_max)/len(conf_list_max))
     print(real_list)
     print(theo_list)
     test = sum(real_list)
     print(test/len(real_list))
 
-    draw_plot(x=lambdas, practical=practical, teoretical=theoretical, confidence=confidence, LAMBDA=4)
+    draw_plot(x=lambdas, practical=practical, teoretical=theoretical, confidence_avg=confidence_average,
+              confidence_min=confidence_minimal, confidence_max=confidence_maksimal,  LAMBDA=4)
 
 
 def mm1_with_crash(seed, lambda_in, max_packets):

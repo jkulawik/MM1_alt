@@ -158,11 +158,12 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
     print("AVERAGE PRACTICAL TIME OF WAITING IN SYSTEM ", practical_average_time_of_delay)
     delays = []
     for i in packets:
-        if i.time_finish_of_service != 0:
+        delay = i.time_finish_of_service-i.time_of_arrive
+        if delay > 0:
             delays.append(i.time_finish_of_service-i.time_of_arrive)
-    confidence_delay = calculate_confidence(delays, confidence_range)
+    confidence_delay, min_delay, max_delay = calculate_confidence(delays, confidence_range)
 
-    return Time(practical_average_time_of_delay, teoretical_average_delay, confidence_delay)
+    return Time(practical_average_time_of_delay, teoretical_average_delay, confidence_delay, min_delay, max_delay)
 
 
 
@@ -172,35 +173,36 @@ def start_mm1(packets_num, replicates, confidence_range):
     test_mm1 = numpy.arange(0.5, 6.1, 0.5)
     theoretical = []
     practical = []
-    confidence = []
+    confidence_avg = []
+    confidence_minimal = []
+    confidence_maksimal = []
+
     for i in test_mm1:
         real_list = []
         theo_list = []
         conf_list = []
+        conf_list_min = []
+        conf_list_max = []
         print("L NOW: " + str(i))
         for j in (0, replicates):
             print("C NOW: " + str(j))
-            temp = (start_mm1_simulation(LAMBDA=i, seed=j, packets_num=packets_num, confidence_range=confidence_range))
+            temp = start_mm1_simulation(LAMBDA=i, seed=j, packets_num=packets_num, confidence_range=confidence_range)
             real_list.append(temp.practical)
             theo_list.append(temp.teoretical)
             conf_list.append(temp.confidence_interval)
+            conf_list_min.append(temp.confidence_min)
+            conf_list_max.append(temp.confidence_max)
         test = sum(real_list)
         avg_practical_delay = str(test / len(real_list))
         theoretical.append(theo_list[0])
         practical.append(test / len(real_list))
-        confidence.append(sum(conf_list) / len(conf_list))
+        confidence_avg.append(sum(conf_list) / len(conf_list))
+        confidence_minimal.append(sum(conf_list_min) / len(conf_list_min))
+        confidence_maksimal.append(sum(conf_list_max) / len(conf_list_max))
     test = sum(real_list)
     print(test / len(real_list))
-    #practical = []
-    #teoretical = []
-   # confidence = []
-    #for i in results1:
-     #   practical.append(i.practical)
-    #for i in results1:
-     #   teoretical.append(i.teoretical)
-    #for i in results1:
-      #  confidence.append(i.confidence_interval)
-    draw_plot(test_mm1, practical, theoretical, confidence, 6)
+    draw_plot(x=test_mm1, practical=practical, teoretical=theoretical, confidence_avg=confidence_avg,
+              confidence_min=confidence_minimal, confidence_max=confidence_maksimal, LAMBDA=6)
 
 
 
