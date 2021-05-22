@@ -1,9 +1,9 @@
 import random
 import queue
-import Packet
-import PacketEvent
+from models import PacketMM1
+from models import PacketEvent
 import numpy
-from Time import Time
+from models import Time
 import scipy.stats as st
 import TypeOfEvent
 from functions import exp
@@ -12,14 +12,14 @@ from functions import draw_plot
 
 # ponizsza f-cja odpowiada za generacje zdarzenia zakonczenia obslugi pakietu przez serwer
 def plan_event_finish_service(number_of_packet, time_get_by_server, time_of_service):
-    return PacketEvent.PacketEvent(TypeOfEvent.TypeOfEvent.FINISH_OF_SERVICE,
+    return PacketEvent(TypeOfEvent.TypeOfEvent.FINISH_OF_SERVICE,
                                    number_of_packet,
                                    time_get_by_server + time_of_service)
 
 
 # ponizsza f-cja odpowiada za generacje zdarzenia przyjscia kolejnego pakietu
 def plan_event_come_next_packet(clock, number_of_packet, time_of_next_packet):
-    return PacketEvent.PacketEvent(TypeOfEvent.TypeOfEvent.COME_OF_PACKET, number_of_packet, clock + time_of_next_packet)
+    return PacketEvent(TypeOfEvent.TypeOfEvent.COME_OF_PACKET, number_of_packet, clock + time_of_next_packet)
 
 
 def start_mm1_simulation(LAMBDA,seed):
@@ -50,7 +50,7 @@ def start_mm1_simulation(LAMBDA,seed):
     number_of_packets_for_simulation = 1000000
 
     # wygenerowanie pierwszego pakietu w symulacji
-    first_packet = Packet.Packet(
+    first_packet = PacketMM1(
         exp(time_of_service),
         exp(average_time_between_packets),
         -1,
@@ -70,7 +70,7 @@ def start_mm1_simulation(LAMBDA,seed):
         plan_event_come_next_packet(clock,
                                     packetsCounter,
                                     time_next_packet))
-    packets.append(Packet.Packet(exp(time_of_service), time_next_packet, -1, -1, packetsCounter))
+    packets.append(PacketMM1(exp(time_of_service), time_next_packet, -1, -1, packetsCounter))
 
     # sortowanie listy zdarzen po czasie
     list_of_events.sort(key=lambda Event: Event.time_of_event)
@@ -89,7 +89,7 @@ def start_mm1_simulation(LAMBDA,seed):
                 # zdarzenie przyjscia kolejnego pakietu
                 list_of_events.append(plan_event_come_next_packet(clock, packetsCounter, time_next_packet))
                 packets.append(
-                    Packet.Packet(exp(time_of_service), clock + time_next_packet, -1, -1, packetsCounter))
+                    PacketMM1(exp(time_of_service), clock + time_next_packet, -1, -1, packetsCounter))
                 # dodanie pakietu do listy pakietow
                 queue_of_packets.put(packets[packetsCounter - 1])
             # jesli serwer jest wolny - bierzemy pakiet do obslugi
