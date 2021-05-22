@@ -5,21 +5,21 @@ from models import PacketEvent
 import numpy
 from models import Time
 from functions import calculate_confidence
-import TypeOfEvent
+from TypeOfEvent import TypeOfEvent
 from functions import exp
 from functions import draw_plot
 
 
 # ponizsza f-cja odpowiada za generacje zdarzenia zakonczenia obslugi pakietu przez serwer
 def plan_event_finish_service(number_of_packet, time_get_by_server, time_of_service):
-    return PacketEvent(TypeOfEvent.TypeOfEvent.FINISH_OF_SERVICE,
+    return PacketEvent(TypeOfEvent.FINISH_OF_SERVICE,
                                    number_of_packet,
                                    time_get_by_server + time_of_service)
 
 
 # ponizsza f-cja odpowiada za generacje zdarzenia przyjscia kolejnego pakietu
 def plan_event_come_next_packet(clock, number_of_packet, time_of_next_packet):
-    return PacketEvent(TypeOfEvent.TypeOfEvent.COME_OF_PACKET, number_of_packet, clock + time_of_next_packet)
+    return PacketEvent(TypeOfEvent.COME_OF_PACKET, number_of_packet, clock + time_of_next_packet)
 
 
 def start_mm1_simulation(LAMBDA, seed, packets_num, confidence_range):

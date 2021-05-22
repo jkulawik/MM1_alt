@@ -26,6 +26,7 @@ def draw_plot(x, practical, teoretical, confidence_avg, confidence_min, confiden
     plt.plot(x, confidence_max, label='maksimum przedzialu ufnosci')
     plt.xlabel("Lambda 0.5 - "+str(LAMBDA)+".0 [1/s]")
     plt.ylabel("Sredni czas oczekowania E[T]")
+    plt.title("Wykres zależności średniego opóźnienia pakietów w zależności od Lambda")
     plt.legend()
     plt.show()
 

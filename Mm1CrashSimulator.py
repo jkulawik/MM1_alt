@@ -1,5 +1,6 @@
 from functions import exp
 import random
+from TypeOfEvent import TypeOfEvent
 from models import Event, Packet, CrashOn
 from functions import write_output_to_file
 from functions import draw_plot
