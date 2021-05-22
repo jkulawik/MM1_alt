@@ -150,11 +150,15 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
         print("AVERAGE TEORETICAL TIME OF WAITING IN QUEUE: INF")
 
     print("PRACTICAL CALCULATIONS")
+    #rozbieg
+    packets_less = packets[round(len(packets) * 0.1):]
     # Sredni czas oczekiwania w kolejce - kalkulacje praktyczne
     practical_average_time_of_delay = 0
-    for i in range(0, number_of_packets_for_simulation - 1):
-        practical_average_time_of_delay += (packets[i].time_finish_of_service -
-                                  packets[i].time_of_arrive) / (number_of_packets_for_simulation - 1)
+    for i in packets:
+        delay = i.time_finish_of_service - i.time_of_arrive
+        if delay > 0:
+            practical_average_time_of_delay += delay
+    practical_average_time_of_delay /= (number_of_packets_for_simulation - 1)
     print("AVERAGE PRACTICAL TIME OF WAITING IN SYSTEM ", practical_average_time_of_delay)
     delays = []
     for i in packets:
@@ -162,29 +166,26 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
         if delay > 0:
             delays.append(i.time_finish_of_service-i.time_of_arrive)
     confidence_delay, min_delay, max_delay = calculate_confidence(delays, confidence_range)
-
     return Time(practical_average_time_of_delay, teoretical_average_delay, confidence_delay, min_delay, max_delay)
-
-
 
 
 def start_mm1(packets_num, replicates, confidence_range):
     #lista elementow od 0.5 do 6.0 z krokiem 0.1
-    test_mm1 = numpy.arange(0.5, 6.1, 0.5)
+    lambdas = numpy.arange(0.5, 6.1, 0.5)
     theoretical = []
     practical = []
     confidence_avg = []
     confidence_minimal = []
     confidence_maksimal = []
 
-    for i in test_mm1:
+    for i in lambdas:
         real_list = []
         theo_list = []
         conf_list = []
         conf_list_min = []
         conf_list_max = []
         print("L NOW: " + str(i))
-        for j in (0, replicates):
+        for j in range(0, replicates):
             print("C NOW: " + str(j))
             temp = start_mm1_simulation(LAMBDA=i, seed=j, packets_num=packets_num, confidence_range=confidence_range)
             real_list.append(temp.practical)
@@ -201,7 +202,7 @@ def start_mm1(packets_num, replicates, confidence_range):
         confidence_maksimal.append(sum(conf_list_max) / len(conf_list_max))
     test = sum(real_list)
     print(test / len(real_list))
-    draw_plot(x=test_mm1, practical=practical, teoretical=theoretical, confidence_avg=confidence_avg,
+    draw_plot(x=lambdas, practical=practical, teoretical=theoretical, confidence_avg=confidence_avg,
               confidence_min=confidence_minimal, confidence_max=confidence_maksimal, LAMBDA=6)
 
 
