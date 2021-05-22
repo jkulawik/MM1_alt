@@ -9,8 +9,8 @@ from functions import calculate_confidence
 def start_crash_simulation(packets_num, replicates, confidence_range):
     real_list = []
     theo_list = []
-    #lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
-    lambdas = [1, 2, 3, 4]
+    lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+    #lambdas = [1, 2, 3, 4]
     theoretical = []
     practical = []
     confidence = []

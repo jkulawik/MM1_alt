@@ -157,10 +157,8 @@ def calculate_statistics(number_of_packets_for_simulation, packets, time_of_serv
     print("AVERAGE PRACTICAL TIME OF WAITING IN SYSTEM ", practical_average_time_of_delay)
     delays = []
     for i in packets:
-        delays.append(i.time_finish_of_service-i.time_of_arrive)
-    for i in delays:
-        if i <0:
-            print("ERR")
+        if p.finish_of_service != 0:
+            delays.append(i.time_finish_of_service-i.time_of_arrive)
     confidence_delay = calculate_confidence(delays, confidence_range)
 
     return Time(practical_average_time_of_delay, teoretical_average_delay, confidence_delay)
