@@ -44,6 +44,12 @@ def write_output_to_file(real_list, theo_list, l, avg_practical_delay):
 
 
 def calculate_confidence(opoznienia, range):
+    #opoznienia = []
+    #for i in packets:
+     #   if type == 0:
+      #      opoznienia.append(i.time_finish_of_service - i.time_of_arrive)
+       # elif type == 1:
+        #    opoznienia.append(i.finish_of_service - i.time_of_arrival)
     confidence = st.norm.interval(alpha=range, loc=numpy.mean(opoznienia), scale=st.sem(opoznienia))
     confidence_delays = []
     for i in opoznienia:

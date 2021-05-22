@@ -5,12 +5,14 @@ from models import Event, Packet, CrashOn
 from functions import write_output_to_file
 from functions import draw_plot
 from functions import calculate_confidence
+import numpy as np
 
 
 def start_crash_simulation(packets_num, replicates, confidence_range):
     real_list = []
     theo_list = []
-    lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+    #lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+    lambdas = np.arange(0.5, 4, 0.1)
     #lambdas = [1, 2, 3, 4]
     theoretical = []
     practical = []
