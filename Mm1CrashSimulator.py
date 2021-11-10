@@ -8,7 +8,7 @@ from functions import calculate_confidence
 import numpy as np
 
 
-def start_crash_simulation(packets_num, replicates, confidence_range):
+def start_crash_simulation(packets_num, repetitions, confidence_range):
     real_list = []
     theo_list = []
     #lambdas = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
@@ -27,7 +27,7 @@ def start_crash_simulation(packets_num, replicates, confidence_range):
         conf_list_min = []
         conf_list_max = []
         print("L NOW: " + str(l))
-        for c in range(0, replicates):
+        for c in range(0, repetitions):
             print("C NOW: " + str(c))
             a, b, delay = mm1_with_crash(c, l, packets_num)
             real_list.append(a)
